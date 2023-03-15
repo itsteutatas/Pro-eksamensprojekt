@@ -1,0 +1,43 @@
+brainstorm
+...
+...
+...
+...
+...
+twitch chatbot
+
+
+projekt beskrivelse
+
+problemformulering
+twitchstreamere skal idag have flere og flere chatbots for at have alle de funktioner som de gerne ville have da nogle er bedre og mere brugervenlig end andre. dette skaber et hav af forskellige twitchbots som alle ofte har de samme basis funktioner jeg ville derfor lave en twitchbot som har alle basisfunktioner og nogle af de lidt mere specialle funktioner
+
+funktionsbeskrivelse
+chatbot bootloader
+funktion som bruges til at starte og connect vores chatbot til en specifik konto der derefter har adgang til at være chatbot på xyz stream
+
+giveaway
+funktion til at lave giveaways som består af en join start og stop command
+
+shoutout
+funktion til at shoutout en streamer hvor man foreksempel bliver "raided" på twitch
+
+discord
+en funktion til at gøre det let for seeren at komme ind på en streamers discord for blandt andet at være med i spil etc
+
+kravspec
+chatbotten skal kunne køre med giveaway shoutout og en discord funktion
+den skal være brugervenlig og have en liste af commands et sted
+den skal hjælpe streameren med håndtering af giveaways
+dens funktioner skal være async så alt kan køre oven i hindanden og ikke skulle vente på hindanden
+
+højniveaudesign
+                                   bootloader
+internal funktion                   am-i-up
+
+externalcommands        giveaway    shoutout    discord
+
+
+fordeling
+
+skitser etc
