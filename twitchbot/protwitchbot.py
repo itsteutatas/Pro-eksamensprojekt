@@ -19,13 +19,13 @@ class giveaways():
     async def participate(self):
 
         conn = await aiomysql.connect(dbcfg.localconfig["host"], dbcfg.localconfig["user"], dbcfg.localconfig["password"], dbcfg.localconfig["db"])
-        cur = conn.cursor()
+        cur = await conn.cursor()
 
-        await cur.execute(f"SELECT * from participants where participantNAME = '{probot.join}'")
+        await cur.execute(f"SELECT * from participants where participantNAME = {probot.name}")
         if cur.fetchall():
             pass
         else:
-            await cur.execute(f"INSERT INTO participants(participantID, participantNAME) VALUES (0, '{probot.join}')")
+            await cur.execute(f"INSERT INTO participants(participantID, participantNAME) VALUES (0, {probot.name})")
 
         await conn.commit()
 
@@ -33,10 +33,10 @@ class giveaways():
 
     async def end(self):
         conn = await aiomysql.connect(dbcfg.localconfig["host"], dbcfg.localconfig["user"], dbcfg.localconfig["password"], dbcfg.localconfig["db"])
-        cur = conn.cursor()
+        cur = await conn.cursor()
 
         await cur.execute("SELECT participantNAME FROM participants ORDER BY RAND() LIMIT 1")
-        winner = cur.fetchone()
+        winner = await cur.fetchone()
         await conn.commit()
 
         conn.close()
@@ -56,14 +56,21 @@ class probot(commands.Bot):
         print(f'Logged in as | {self.nick}')
         print(f'User id is | {self.user_id}')
 
+    async def name(self):
+        return str(self.name)
+
+
     # final state [shoutout command]
     @commands.command()
     async def so(self, ctx: commands.Context, name: str):
+        print('test')
+
         await ctx.send(f"Check out {name} over at twitch.tv/{name}")
 
     # final state [discord command]
     @commands.command()
     async def discord(self, ctx: commands.Context):
+        print('test')
         await ctx.send("https://discord.gg/FeajQPq4TZ")
 
     # teststate [giveaway]
@@ -95,10 +102,10 @@ class probot(commands.Bot):
     async def join(self, ctx: commands.Context):
         if self.giveaway_bool == True:
             name = ctx.author
-
+            print('test1')
             await giveaways.participate(giveaways())
-
-            return name
+            print('test2')
+            self.name = name
 
 
 
