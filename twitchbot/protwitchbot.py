@@ -2,16 +2,23 @@ from typing import Any
 
 from twitchio.ext import commands, routines
 import asyncio
+import aiomysql
+
 import dbconfig as dbcfg
 import oauthconfig as oauth
-import aiomysql
+import config as cfg
+
+
 
 
 class probot(commands.Bot):
+
+
     def __init__(self):
         # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
-        super().__init__(token=oauth.oauth, prefix='!', initial_channels=['teutatas'])
+        super().__init__(token=oauth.oauth, prefix='!', initial_channels=cfg.i_channel_list)
         self.giveaway_bool = False
+
 
         # Set up the database connection and create the participants table if it doesn't exist
         self.loop.create_task(self.setup_database())
@@ -59,50 +66,56 @@ class probot(commands.Bot):
 
         await curr.execute("SELECT participantNAME FROM participants ORDER BY RAND() LIMIT 1")
         winner = await curr.fetchone()
+
         await conn.commit()
         conn.close()
 
         return winner
 
     # final state [shoutout command]
+    @commands.command(name='so')
+    async def shoutout(self, ctx: commands.Context, name: str):
+        await ctx.send(f'Check out {name} over at twitch.tv/{name}')
+
     @commands.command()
-    async def so(self, ctx: commands.Context, name: str):
-        print('test')
-        await ctx.send(f"Check out {name} over at twitch.tv/{name}")
+    async def test(self, ctx: commands.Context):
+        await ctx.send(f'test')
 
     # final state [discord command]
     @commands.command()
     async def discord(self, ctx: commands.Context):
         print('test')
-        await ctx.send("https://discord.gg/FeajQPq4TZ")
+        await ctx.send("https://discord.gg/a3jHXau")
 
     # teststate [giveaway]
     @commands.command()
     async def giveaway(self, ctx: commands.Context):
+        await self.setup_database()
         if self.giveaway_bool:
             await ctx.send(f'Giveaway already running')
         else:
-            if ctx.author.name == 'teutatas':
+            if ctx.author.name in cfg.admin_n_list:
                 await ctx.send(f'GivePLZ Giveaway TakeNRG')
                 self.giveaway_bool = True
                 return
 
     @commands.command()
     async def endgiveaway(self, ctx: commands.Context):
-        # Check if a giveaway is currently active
-        if not self.giveaway_bool:
-            await ctx.send('There is currently no active giveaway.')
-            return
+        if ctx.author.name in cfg.admin_n_list:
+            # Check if a giveaway is currently active
+            if not self.giveaway_bool:
+                await ctx.send('There is currently no active giveaway.')
+                return
 
-        # Pick a winner from the list of participants
-        winner = await self.get_winner()
-        winner = str(winner).translate( { ord(i): None for i in "'(),"} )
-        # Announce the winner in chat
-        await ctx.send(f'Congratulations {winner}! You have won the giveaway!')
+            # Pick a winner from the list of participants
+            winner = await self.get_winner()
+            winner = str(winner).translate( { ord(i): None for i in "'(),"} )
+            # Announce the winner in chat
+            await ctx.send(f'Congratulations {winner}! You have won the test!')
 
-        # Reset the giveaway state
-        self.giveaway_bool = False
-        self.get_winner = []
+            # Reset the giveaway state
+            self.giveaway_bool = False
+            self.get_winner = []
 
     @commands.command(name='join')
     async def join_giveaway(self, ctx: commands.Context):

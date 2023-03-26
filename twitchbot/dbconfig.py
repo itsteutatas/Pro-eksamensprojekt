@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 localconfig = {
-        'user': '',
+        'user': 'root',
         'password': '',
-        'host': 'localhost',
+        'host': '127.0.0.1',
         'db': 'giveawaydb',
 }
 
