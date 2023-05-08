@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-i_channel_list = ['teutatas']       # everything needs to be lowercase
-admin_n_list = ['teutatas']         # everything needs to be lowercase
-
+i_channel_list = ['teutatas']
+admin_n_list = ['teutatas']
 
 # examples
 
